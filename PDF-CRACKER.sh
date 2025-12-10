@@ -13,8 +13,8 @@ clear
 echo -e "${BLUE}####################################################${NC}"
 echo -e "${BLUE}#           PDF CRACKER - BASH SCRIPT              #${NC}"
 echo -e "${BLUE}#           OWNER BY AMIT DEVI(WHITEDEVIL-21)      #${NC}"
-echo -e "${BLUE}#           ${YELLOW}Offline & Colored Output${BLUE}#${NC}"
-echo -e "${BLUE}#####################################################${NC}"
+echo -e "${BLUE}#           ${YELLOW}Offline & Colored Output${BLUE}      #${NC}"
+echo -e "${BLUE}####################################################${NC}"
 echo ""
 
 # --- DEPENDENCY CHECK ---
@@ -27,7 +27,6 @@ if ! command -v qpdf &> /dev/null; then
 fi
 
 # --- INPUT HANDLING ---
-# You can pass arguments or enter them interactively
 PDF_FILE=$1
 WORDLIST=$2
 
@@ -36,11 +35,12 @@ if [ -z "$PDF_FILE" ]; then
     read PDF_FILE
 fi
 
-# Remove single quotes if user dragged and dropped file
-PDF_FILE=$(echo "$PDF_FILE" | tr -d "'")
+# Fix: Only remove surrounding quotes if user dragged/dropped, 
+# preserving quotes inside the actual filename.
+PDF_FILE=$(echo "$PDF_FILE" | sed -e "s/^'//" -e "s/'$//")
 
 if [ ! -f "$PDF_FILE" ]; then
-    echo -e "${RED}[!] Error: PDF file not found at $PDF_FILE${NC}"
+    echo -e "${RED}[!] Error: PDF file not found at: $PDF_FILE${NC}"
     exit 1
 fi
 
@@ -49,11 +49,11 @@ if [ -z "$WORDLIST" ]; then
     read WORDLIST
 fi
 
-# Remove single quotes if user dragged and dropped file
-WORDLIST=$(echo "$WORDLIST" | tr -d "'")
+# Fix: Same quote handling for wordlist
+WORDLIST=$(echo "$WORDLIST" | sed -e "s/^'//" -e "s/'$//")
 
 if [ ! -f "$WORDLIST" ]; then
-    echo -e "${RED}[!] Error: Wordlist file not found at $WORDLIST${NC}"
+    echo -e "${RED}[!] Error: Wordlist file not found at: $WORDLIST${NC}"
     exit 1
 fi
 
@@ -65,16 +65,24 @@ echo -e "${BLUE}[*] Press Ctrl+C to stop${NC}\n"
 COUNT=0
 TOTAL_LINES=$(wc -l < "$WORDLIST")
 
+if [ "$TOTAL_LINES" -eq 0 ]; then
+    echo -e "${RED}[!] Error: The wordlist is empty.${NC}"
+    exit 1
+fi
+
 # --- THE LOOP ---
+# IFS= prevents read from trimming leading/trailing whitespace from passwords
 while IFS= read -r password || [ -n "$password" ]; do
     ((COUNT++))
     
-    # Print progress (overwrites the line with \r)
-    echo -ne "${YELLOW}\r[*] Trying [$COUNT / $TOTAL_LINES]: ${NC}$password"
+    # FIX: Remove Windows Carriage Return (\r) if present
+    password=${password//$'\r'/}
+
+    # FIX: \033[K clears the rest of the line to prevent visual glitches
+    echo -ne "${YELLOW}\r[*] Trying [$COUNT / $TOTAL_LINES]: ${NC}$password\033[K"
     
     # Try to decrypt using qpdf
-    # We send stdout and stderr to /dev/null to keep it clean
-    # We exit successfully (0) if password is correct
+    # Use the password to verify encryption status
     qpdf --password="$password" --decrypt "$PDF_FILE" /dev/null 2>/dev/null
     
     if [ $? -eq 0 ]; then
