@@ -1,6 +1,5 @@
 # PDF-CRACKER
 
-
 ## 📜 Description
 **PDF-CRACKER** is a tool designed to unlock and crack password-protected PDF files based on user requirements. It is a lightweight and efficient script optimized for testing password strength on your own documents.
 
@@ -27,12 +26,11 @@
     <li>pkg install qpdf</li>
     <li>bash PDF-CRACKER.sh</li>
   </ul>
-
+  
 ## Output
 **<p><b>Enter the path of the PDF file you want to test.(E.g. FILE.pdf)</b></p>**
 **<p><b>Provide the path to your password wordlist (dictionary file).</b></p>**
 **<p><b>Wait for the process to complete.</b></p>**
-<br>
 
 ## 👤 Author & Owner
 **This tool is created and maintained by:**
