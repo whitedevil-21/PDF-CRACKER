@@ -24,7 +24,7 @@
     <li>cd PDF-CRACKER</li>
     <li>chmod +x PDF-CRACKER</li>
     <li>pkg install qpdf</li>
-    <li>bash PDF-CRACKER.sh</li>
+    <li>bash cracker.sh</li>
   </ul>
   
 ## Output
