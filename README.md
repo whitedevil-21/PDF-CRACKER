@@ -20,7 +20,7 @@
   <ul>
     <li>pkg update & upgrade -y</li>
     <li>pkg install git -y</li>
-    <li>git clone</li>
+    <li>git clone https://github.com/whitedevil-21/PDF-CRACKER.git</li>
     <li>cd PDF-CRACKER</li>
     <li>chmod +x PDF-CRACKER</li>
     <li>pkg install qpdf</li>
